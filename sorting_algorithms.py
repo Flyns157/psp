@@ -1,3 +1,5 @@
+__version__ = "1.0.0"
+
 def quicksort(arr):
     if len(arr) <= 1:
         return arr
@@ -26,42 +28,47 @@ def quicksort_wr(arr):
         stack.append((i + 2, high))
     return arr
 
-def mergesort(arr):
-    if len(arr) <= 1:
-        return arr
-    n = len(arr)
-    temp_arr = [0] * n
-    width = 1
-    while width < n:
-        for i in range(0, n, 2 * width):
-            merge(arr, i, min(i + width, n), min(i + 2 * width, n), temp_arr)
-        arr, temp_arr = temp_arr, arr
-        width *= 2
-    return arr
-
-def merge(arr, left_start, right_start, right_end, temp_arr):
-    left_end = right_start - 1
-    i = left_start
-    j = right_start
-    k = left_start
-    while i <= left_end and j <= right_end:
-        if arr[i] <= arr[j]:
-            temp_arr[k] = arr[i]
+def mergesort(L):
+    array=L[:]
+    if len(array) > 1:
+        r = len(array)//2
+        L = array[:r]
+        M = array[r:]
+        L=mergesort(L)
+        M=mergesort(M)
+        i = j = k = 0
+        while i < len(L) and j < len(M):
+            if L[i] < M[j]:
+                array[k] = L[i]
+                i += 1
+            else:
+                array[k] = M[j]
+                j += 1
+            k += 1
+        while i < len(L):
+            array[k] = L[i]
             i += 1
-        else:
-            temp_arr[k] = arr[j]
+            k += 1
+        while j < len(M):
+            array[k] = M[j]
             j += 1
-        k += 1
-    while i <= left_end:
-        temp_arr[k] = arr[i]
-        i += 1
-        k += 1
-    while j <= right_end:
-        temp_arr[k] = arr[j]
-        j += 1
-        k += 1
+            k += 1
+    return array
 
 def mergesort_wr(arr):
+    def merge_wr(left, right):
+        result = []
+        i, j = 0, 0
+        while i < len(left) and j < len(right):
+            if left[i] < right[j]:
+                result.append(left[i])
+                i += 1
+            else:
+                result.append(right[j])
+                j += 1
+        result += left[i:]
+        result += right[j:]
+        return result
     if len(arr) <= 1:
         return arr
     middle = len(arr) // 2
@@ -71,21 +78,18 @@ def mergesort_wr(arr):
     right = mergesort_wr(right)
     return merge_wr(left, right)
 
-def merge_wr(left, right):
-    result = []
-    i, j = 0, 0
-    while i < len(left) and j < len(right):
-        if left[i] < right[j]:
-            result.append(left[i])
-            i += 1
-        else:
-            result.append(right[j])
-            j += 1
-    result += left[i:]
-    result += right[j:]
-    return result
-
 def heapsort_wr(arr):
+    def heapify_wr(arr, n, i):
+        largest = i
+        left = 2 * i + 1
+        right = 2 * i + 2
+        if left < n and arr[left] > arr[largest]:
+            largest = left
+        if right < n and arr[right] > arr[largest]:
+            largest = right
+        if largest != i:
+            arr[i], arr[largest] = arr[largest], arr[i]
+            heapify_wr(arr, n, largest)
     n = len(arr)
     for i in range(n // 2 - 1, -1, -1):
         heapify_wr(arr, n, i)
@@ -94,19 +98,30 @@ def heapsort_wr(arr):
         heapify_wr(arr, i, 0)
     return arr
 
-def heapify_wr(arr, n, i):
-    largest = i
-    left = 2 * i + 1
-    right = 2 * i + 2
-    if left < n and arr[left] > arr[largest]:
-        largest = left
-    if right < n and arr[right] > arr[largest]:
-        largest = right
-    if largest != i:
-        arr[i], arr[largest] = arr[largest], arr[i]
-        heapify_wr(arr, n, largest)
-
 def heapsort(arr):
+    def heapify(arr, n, i):
+        j = i
+        while True:
+            left = 2 * j + 1
+            right = 2 * j + 2
+            if left >= n:
+                break
+            if right >= n:
+                if arr[j] < arr[left]:
+                    arr[j], arr[left] = arr[left], arr[j]
+                break
+            if arr[left] > arr[right]:
+                if arr[j] < arr[left]:
+                    arr[j], arr[left] = arr[left], arr[j]
+                    j = left
+                else:
+                    break
+            else:
+                if arr[j] < arr[right]:
+                    arr[j], arr[right] = arr[right], arr[j]
+                    j = right
+                else:
+                    break
     n = len(arr)
     for i in range(n // 2 - 1, -1, -1):
         heapify(arr, n, i)
@@ -135,30 +150,6 @@ def heapsort(arr):
                 else:
                     break
     return arr
-
-def heapify(arr, n, i):
-    j = i
-    while True:
-        left = 2 * j + 1
-        right = 2 * j + 2
-        if left >= n:
-            break
-        if right >= n:
-            if arr[j] < arr[left]:
-                arr[j], arr[left] = arr[left], arr[j]
-            break
-        if arr[left] > arr[right]:
-            if arr[j] < arr[left]:
-                arr[j], arr[left] = arr[left], arr[j]
-                j = left
-            else:
-                break
-        else:
-            if arr[j] < arr[right]:
-                arr[j], arr[right] = arr[right], arr[j]
-                j = right
-            else:
-                break
 
 def insertion_sort(arr):
     for i in range(1, len(arr)):
@@ -205,22 +196,21 @@ def bubble_sort(arr):
         n -= 1
     return arr
 
-def down_heap(data, end, lhc):
-    root = 0
-    while lhc(root) <= end:
-        child = lhc(root)
-        swap = root
-        if data[swap] < data[child]:
-            swap = child
-        if child + 1 <= end and data[swap] < data[child + 1]:
-            swap = child + 1
-        if swap == root:
-            return
-        else:
-            data[root], data[swap] = data[swap], data[root]
-            root = swap
-
 def smoothsort(data):
+    def down_heap(data, end, lhc):
+        root = 0
+        while lhc(root) <= end:
+            child = lhc(root)
+            swap = root
+            if data[swap] < data[child]:
+                swap = child
+            if child + 1 <= end and data[swap] < data[child + 1]:
+                swap = child + 1
+            if swap == root:
+                return
+            else:
+                data[root], data[swap] = data[swap], data[root]
+                root = swap
     size = len(data)
     if size < 2:
         return data
@@ -244,8 +234,7 @@ def smoothsort(data):
     return data
 
 def cocktail_sort(arr):
-    if len(arr) == 0:
-        return arr
+    if len(arr) == 0: return arr
     n = len(arr)
     swapped = True
     start = 0
@@ -259,8 +248,9 @@ def cocktail_sort(arr):
         end -= 1
         if not swapped:
             break
+        end -= 1
         swapped = False
-        for i in range(end, start - 1, -1):
+        for i in range(end - 1, start - 1, -1):
             if arr[i] > arr[i + 1]:
                 arr[i], arr[i + 1] = arr[i + 1], arr[i]
                 swapped = True
@@ -304,6 +294,27 @@ def odd_even_sort(arr):
                 sorted = False
     return arr
 
+def intercalary_sort1(tab: list[int],p:float=2.95) -> list[int]:
+    L=list(tab)
+    if len(L) < 2: return L
+    sorted_list = [L.pop(0)]
+    for i in L:
+        tmp1 = (0, (sorted_list[0] - i)**2, sorted_list[0] - i > 0)
+        for j in range(1, len(sorted_list), len(sorted_list) // int(len(sorted_list)**(1/p))):
+            tmp2 = sorted_list[j] - i
+            if (tmp2)**2 < tmp1[1]:
+                tmp1 = (j, (tmp2)**2, tmp2 > 0)
+        k = tmp1[0]
+        if tmp1[2]:
+            while k > 0 and sorted_list[k-1] > i:
+                k -= 1
+            sorted_list.insert(k, i)
+        else:
+            while k < len(sorted_list) and sorted_list[k] < i:
+                k += 1
+            sorted_list.insert(k, i)
+    return sorted_list
+
 def intercalary_sort2(L: list[int]) -> list[int]:
     if len(L) == 0: return []
     sorted_list = [L[0]]
@@ -317,4 +328,18 @@ def intercalary_sort2(L: list[int]) -> list[int]:
             else:
                 right = mid - 1
         sorted_list.insert(left, i)
+    return sorted_list
+
+def intercalary_sort3(L: list[int]) -> list[int]:
+    sorted_list = [L[0]]
+    for i in range(len(L)):
+        left = 0
+        right = len(sorted_list) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if sorted_list[mid] < L[i]:
+                left = mid + 1
+            else:
+                right = mid - 1
+        sorted_list.insert(left, L[i])
     return sorted_list
