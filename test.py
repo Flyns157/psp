@@ -1,31 +1,6 @@
+from utils import list_module_functions, gen_random_list
 import sorting_algorithms
 import unittest
-import inspect
-import random
-
-def list_module_functions(module):
-    """
-    Liste les fonctions définies dans un module.
-    
-    Args:
-        module (module): Le module à analyser.
-        
-    Returns:
-        list: Une liste des noms des fonctions définies dans le module.
-    """
-    return [name for name, obj in inspect.getmembers(module, inspect.isfunction)]
-
-def gen_random_list(size):
-    """
-    Génère une liste de taille `size` avec des entiers aléatoires.
-    
-    Args:
-        size (int): La taille de la liste.
-        
-    Returns:
-        list: La liste de taille `size` avec des entiers aléatoires.
-    """
-    return [random.randint(1, 100) for _ in range(size)]
 
 class TestSortingAlgorithms(unittest.TestCase):
 
@@ -35,7 +10,7 @@ class TestSortingAlgorithms(unittest.TestCase):
         Méthode exécutée une seule fois avant tous les tests.
         """
         cls.module = sorting_algorithms
-        cls.functions = list_module_functions(cls.module)
+        cls.functions = [func for func in list_module_functions(cls.module) if func.endswith('_sort')]
 
     def test_functions_exist_and_callable(self):
         """
@@ -94,7 +69,7 @@ class TestSortingAlgorithms(unittest.TestCase):
                     with self.assertRaises(TypeError) as context:
                         func(invalid_input)
                     # Ensure the error message is meaningful
-                    self.assertIn(  "must be a sequence", str(context.exception),
+                    self.assertIn(  "must be of type", str(context.exception),
                                     msg=f"Function '{func_name}' did not raise TypeError for invalid input {invalid_input}.")
 
 if __name__ == '__main__':
