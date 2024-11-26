@@ -330,6 +330,28 @@ def Tim_sort(arr: Array) -> Array:
         size *= 2
     return arr
 
+@type_check
+def bottom_up_merge_sort(arr: Array) -> Array:
+    def bottom_up_merge(arr: Array, iLeft: int, iRight: int, iEnd: int, tmp: Array) -> None:
+        i, j = iLeft, iRight
+        for k in range(iLeft, iEnd):
+            if i < iRight and (j >= iEnd or arr[i] <= arr[j]):
+                tmp[k] = arr[i]
+                i += 1
+            else:
+                tmp[k] = arr[j]
+                j += 1
+
+    n = len(arr)
+    tmp = [0] * n
+    width = 1
+    while width < n:
+        for i in range(0, n, 2 * width):
+            bottom_up_merge(arr, i, min(i + width, n), min(i + 2 * width, n), tmp)
+        arr, tmp = tmp, arr
+        width *= 2
+    return arr
+
 #  ==============================================================================================================
 @type_check
 def intercalary_sort1(tab: Array,p:float=2.95) -> Array:
