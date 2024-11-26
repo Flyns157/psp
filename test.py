@@ -68,9 +68,7 @@ class TestSortingAlgorithms(unittest.TestCase):
                 with self.subTest(func=func_name, input=invalid_input):
                     with self.assertRaises(TypeError) as context:
                         func(invalid_input)
-                    # Ensure the error message is meaningful
-                    # self.assertIn(  "Expected ", str(context.exception),
-                    #                 msg=f"Function '{func_name}' did not raise TypeError for invalid input {invalid_input}.")
+                    self.assertIsNotNone(context.exception)
 
 if __name__ == '__main__':
     unittest.main()
