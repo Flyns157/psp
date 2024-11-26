@@ -10,7 +10,7 @@ class TestSortingAlgorithms(unittest.TestCase):
         Méthode exécutée une seule fois avant tous les tests.
         """
         cls.module = sorting_algorithms
-        cls.functions = [func for func in list_module_functions(cls.module) if func.endswith('_sort')]
+        cls.functions = [func for func in list_module_functions(cls.module) if '_sort' in func]
 
     def test_functions_exist_and_callable(self):
         """

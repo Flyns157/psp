@@ -219,6 +219,117 @@ def quick_sort(arr: Array) -> Array:
             right.append(arr[i])
     return quick_sort(left) + [pivot] + quick_sort(right)
 
+@type_check
+def heap_sort(arr: Array) -> Array:
+    if not validate_array(arr, 2): return arr
+    n = len(arr)
+    for i in range(n // 2 - 1, -1, -1):
+        heapify(arr, n, i)
+    for i in range(n - 1, 0, -1):
+        arr[i], arr[0] = arr[0], arr[i]
+        heapify(arr, i, 0)
+    return arr
+
+@type_check
+def heapify(arr: Array, n: int, i: int) -> Array:
+    largest = i
+    l = 2 * i + 1
+    r = 2 * i + 2
+    if l < n and arr[l] > arr[largest]:
+        largest = l
+    if r < n and arr[r] > arr[largest]:
+        largest = r
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        heapify(arr, n, largest)
+
+@type_check
+def radix_sort(arr: Array) -> Array:
+    def counting_sort(arr: Array, exp: int | float):
+        """Counting sort algorithm implementation
+
+        Args:
+            arr (Array): list of integers to be sorted
+            exp (int | float): the exponent to be used in the algorithm
+
+        Returns:
+            Array: sorted list of integers
+        """
+        n = len(arr)
+        output = [0] * n
+        count = [0] * 10
+        for i in range(n):
+            index = (arr[i] // exp)
+            count[index % 10] += 1
+        for i in range(1, 10):
+            count[i] += count[i - 1]
+        i = n - 1
+        while i >= 0:
+            index = (arr[i] // exp)
+            output[count[index % 10] - 1] = arr[i]
+            count[index % 10] -= 1
+            i -= 1
+        i = 0
+        for i in range(n):
+            arr[i] = output[i]
+        return arr
+
+    if not validate_array(arr, 2): return arr
+    max_element = max(arr)
+    exp = 1
+    while max_element // exp > 0:
+        arr = counting_sort(arr, exp)
+        exp *= 10
+    return arr
+
+@type_check
+def Tim_sort(arr: Array) -> Array:
+    if not validate_array(arr, 2): return arr
+    n = len(arr)
+    min_run = 32
+    while min_run < n:
+        min_run *= 2
+    def insertion_sort_run(arr, left, right):
+        for i in range(left + 1, right + 1):
+            j = i
+            while j > left and arr[j - 1] > arr[j]:
+                arr[j - 1], arr[j] = arr[j], arr[j - 1]
+                j -= 1
+    def merge_sort_run(arr, left, mid, right):
+        i = left
+        j = mid + 1
+        k = left
+        while i <= mid and j <= right:
+            if arr[i] <= arr[j]:
+                temp[k] = arr[i]
+                i += 1
+            else:
+                temp[k] = arr[j]
+                j += 1
+            k += 1
+        while i <= mid:
+            temp[k] = arr[i]
+            i += 1
+            k += 1
+        while j <= right:
+            temp[k] = arr[j]
+            j += 1
+            k += 1
+        for i in range(left, right + 1):
+            arr[i] = temp[i]
+    temp = [0] * n
+    for start in range(0, n, min_run):
+        end = min(start + min_run - 1, n - 1)
+        insertion_sort_run(arr, start, end)
+    size = min_run
+    while size < n:
+        for left in range(0, n, 2 * size):
+            mid = min(n - 1, left + size - 1)
+            right = min(n - 1, mid + size)
+            merge_sort_run(arr, left, mid, right)
+        size *= 2
+    return arr
+
 #  ==============================================================================================================
 @type_check
 def intercalary_sort1(tab: Array,p:float=2.95) -> Array:
