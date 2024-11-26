@@ -134,6 +134,91 @@ def odd_even_sort(arr: Array) -> Array:
                 sorted = False
     return arr
 
+@type_check
+def cocktail_sort(arr: Array) -> Array:
+    if not validate_array(arr, 2): return arr
+    n = len(arr)
+    swapped = True
+    start = 0
+    end = n - 1
+    while (swapped == True):
+        swapped = False
+        for i in range(start, end):
+            if arr[i] > arr[i + 1]:
+                arr[i], arr[i + 1] = arr[i + 1], arr[i]
+                swapped = True
+        if (swapped == False):
+            break
+        swapped = False
+        end = end - 1
+        for i in range(end - 1, start - 1, -1):
+            if arr[i] > arr[i + 1]:
+                arr[i], arr[i + 1] = arr[i + 1], arr[i]
+                swapped = True
+        start = start + 1
+    return arr
+
+@type_check
+def gnome_sort(arr: Array) -> Array:
+    if not validate_array(arr, 2): return arr
+    n = len(arr)
+    i = 1
+    while i < n:
+        if arr[i - 1] <= arr[i]:
+            i += 1
+        else:
+            arr[i - 1], arr[i] = arr[i], arr[i - 1]
+            if i > 1:
+                i -= 1
+    return arr
+
+@type_check
+def merge_sort(arr: Array) -> Array:
+    if not validate_array(arr, 2): return arr
+    if len(arr) > 1:
+        mid = len(arr) // 2
+        left_half = arr[:mid]
+        right_half = arr[mid:]
+
+        merge_sort(left_half)
+        merge_sort(right_half)
+
+        i = j = k = 0
+        while i < len(left_half) and j < len(right_half):
+            if left_half[i] < right_half[j]:
+                arr[k] = left_half[i]
+                i += 1
+            else:
+                arr[k] = right_half[j]
+                j += 1
+            k += 1
+
+        while i < len(left_half):
+            arr[k] = left_half[i]
+            i += 1
+            k += 1
+
+        while j < len(right_half):
+            arr[k] = right_half[j]
+            j += 1
+            k += 1
+    return arr
+
+@type_check
+def quick_sort(arr: Array) -> Array:
+    if not validate_array(arr, 2): return arr
+    if len(arr) <= 1:
+        return arr
+    pivot = arr[0]
+    left = []
+    right = []
+    for i in range(1, len(arr)):
+        if arr[i] < pivot:
+            left.append(arr[i])
+        else:
+            right.append(arr[i])
+    return quick_sort(left) + [pivot] + quick_sort(right)
+
 #  ==============================================================================================================
 @type_check
 def intercalary_sort1(tab: Array,p:float=2.95) -> Array:
