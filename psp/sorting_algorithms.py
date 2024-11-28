@@ -1,4 +1,4 @@
-from utils import *
+from .utils import validate_array, type_check, Array
 
 __version__ = "1.0.0"
 

@@ -1,5 +1,5 @@
-from utils import list_module_functions, gen_random_list
-import sorting_algorithms
+from psp.utils import list_module_functions, gen_random_list
+import psp.sorting_algorithms as sorting_algorithms
 import unittest
 
 class TestSortingAlgorithms(unittest.TestCase):
